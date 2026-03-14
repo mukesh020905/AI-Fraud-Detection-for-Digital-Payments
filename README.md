@@ -80,6 +80,3 @@ graph TD
 
 ---
 
-## 🏆 Project Philosophy
-We believe financial security should be **proactive, transparent, and beautiful**. Our engine doesn't just block fraud; it provides meaningful risk scores and visual context to help financial analysts make better decisions faster.
-#
