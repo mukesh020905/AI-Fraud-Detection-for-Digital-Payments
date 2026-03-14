@@ -1,0 +1,29 @@
+# Datasets
+*.csv
+*.xlsx
+
+# Databases
+*.db
+*.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+
+# Models (Optional: exclude if too large, but usually .pkl under 50MB is fine)
+# If models are > 100MB, they should be in LFS
+# best_fraud_model.pkl
+
+# IDEs
+.vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db

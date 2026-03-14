@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Risk Engine Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js and D3.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="background-effect"></div>
+    
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <span class="pulse-dot"></span>
+                <h1>FRAUD<span>EYE</span> <small>AI Engine</small></h1>
+            </div>
+            <div class="system-controls">
+                <div class="status-indicator">
+                    <span id="connection-status">Connecting...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout">
+        <!-- Sidebar: Global Stats -->
+        <aside class="sidebar">
+            <section class="sidebar-stats">
+                <div class="stat-block">
+                    <label>Total Volume</label>
+                    <h2 id="total-tx">0</h2>
+                </div>
+                <div class="stat-block fraud">
+                    <label>Blocked Fraud</label>
+                    <h2 id="blocked-tx">0</h2>
+                </div>
+                <div class="stat-block risk">
+                    <label>High Risk Alerts</label>
+                    <h2 id="high-risk-tx">0</h2>
+                </div>
+                <div class="stat-block safe">
+                    <label>Safe Processed</label>
+                    <h2 id="safe-tx">0</h2>
+                </div>
+            </section>
+            
+            <section class="live-pulse">
+                <label>System Load Pulse</label>
+                <div class="chart-mini">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Top Row: Focal Analysis -->
+            <div class="analysis-grid">
+                <!-- ML Breakdown -->
+                <section id="explanation-card" class="card glass">
+                    <div class="card-header">
+                        <h2><span class="icon">🔍</span> ML Risk Analysis</h2>
+                        <span id="focus-id">No Selection</span>
+                    </div>
+                    <div class="explanation-content">
+                        <div class="explanation-text" id="explanation-text">
+                            <p class="placeholder-text">Select a transaction to see AI reasoning...</p>
+                        </div>
+                        <div class="shap-chart-container">
+                            <canvas id="shapChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Behavioral Profile -->
+                <section id="behavioral-card" class="card glass">
+                    <div class="card-header">
+                        <h2><span class="icon">👤</span> Behavioral Profile</h2>
+                    </div>
+                    <div class="behavioral-content">
+                        <div id="behavioral-alerts">
+                             <p class="placeholder-text">Analyzing user patterns...</p>
+                        </div>
+                        <div class="behavioral-details" id="user-details">
+                            <!-- Injected by JS -->
+                        </div>
+                        <div class="hybrid-score-container">
+                            <label>Hybrid Risk Index</label>
+                            <div class="progress-bar">
+                                <div id="hybrid-progress" class="progress-fill"></div>
+                            </div>
+                            <span id="hybrid-score-text">0%</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Incoming Fraud Monitor (Credit Specific) -->
+                <section id="credit-monitor-card" class="card glass" style="display: none;">
+                    <div class="card-header">
+                        <h2><span class="icon">📥</span> Incoming Fraud Monitor</h2>
+                        <span id="credit-focus-id"></span>
+                    </div>
+                    <div class="explanation-content">
+                        <div id="credit-alerts-list">
+                            <!-- JS injected -->
+                        </div>
+                        <div class="behavioral-details" id="credit-details">
+                            <!-- JS injected -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Bottom Row: Transaction Feed -->
+            <section class="card glass feed-card">
+                <div class="card-header">
+                    <h2>Real-Time Surveillance Feed</h2>
+                    <div class="feed-controls">
+                        <select id="risk-filter" class="ui-select">
+                            <option value="ALL">All Risks</option>
+                            <option value="CRITICAL">Critical Only</option>
+                            <option value="HIGH">High & Critical</option>
+                        </select>
+                        <button id="pause-btn" class="ui-btn">⏸ Pause Feed</button>
+                    </div>
+                </div>
+                <div class="table-container">
+
+                    <table id="tx-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Counterparty</th>
+                                <th>Amount</th>
+                                <th>ML Prob</th>
+                                <th>Risk Level</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tx-body">
+                            <!-- Rows injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Fraud Network Monitor -->
+            <section id="network-card" class="card glass">
+                <div class="card-header">
+                    <h2><span class="icon">🕸️</span> Fraud Network Topology</h2>
+                </div>
+                <div class="network-container">
+                    <svg id="network-graph"></svg>
+                    <div id="network-legend">
+                        <div class="legend-item"><span class="node-dot account"></span> Account</div>
+                        <div class="legend-item"><span class="node-dot receiver"></span> Receiver</div>
+                        <div class="legend-item"><span class="node-dot suspicious"></span> Cluster Node</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Secondary Grid: Advanced Analytics -->
+            <div class="dashboard-grid-secondary">
+                <!-- Risk Distribution -->
+                <section class="card glass">
+                    <div class="card-header">
+                        <h2><span class="icon">📊</span> Risk Distribution</h2>
+                    </div>
+                    <div class="chart-container-med">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Activity Timeline -->
+                <section class="card glass">
+                    <div class="card-header">
+                        <h2><span class="icon">📈</span> Activity Timeline</h2>
+                    </div>
+                    <div class="chart-container-med">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Suspicious Merchants -->
+                <section class="card glass">
+                    <div class="card-header">
+                        <h2><span class="icon">🏪</span> High-Risk Merchants</h2>
+                    </div>
+                    <div class="merchant-list" id="merchant-ranking">
+                        <p class="placeholder-text">Scanning merchants...</p>
+                    </div>
+                </section>
+
+                <!-- Regional Heatmap -->
+                <section class="card glass">
+                    <div class="card-header">
+                        <h2><span class="icon">🌎</span> Regional Activity</h2>
+                    </div>
+                    <div class="chart-container-med">
+                        <canvas id="regionalChart"></canvas>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
